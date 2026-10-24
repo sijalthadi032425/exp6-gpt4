@@ -1,0 +1,185 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedAssist | Symptom Assistant</title>
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header class="topbar">
+        <a class="brand" href="/">
+            <span class="brand-icon">✚</span>
+            <span>MedAssist<small>AI SYMPTOM ASSISTANT</small></span>
+        </a>
+        <span class="status"><span class="status-dot"></span> Educational support tool</span>
+    </header>
+
+    <main class="page">
+        <section class="hero">
+            <div class="hero-copy">
+                <span class="eyebrow">YOUR HEALTH, BETTER UNDERSTOOD</span>
+                <h1>Understand your symptoms.<br><span>Take your next step.</span></h1>
+                <p>Share your symptoms and health details to receive an AI-generated
+                   summary, possible explanations, follow-up questions, and guidance.</p>
+            </div>
+            <div class="hero-symbol" aria-hidden="true">✚</div>
+        </section>
+
+        <div class="layout">
+            <section class="panel form-panel">
+                <div class="panel-heading">
+                    <div>
+                        <span class="step-label">PATIENT DETAILS</span>
+                        <h2>Tell us about the patient</h2>
+                        <p>Complete the fields below as accurately as possible.</p>
+                    </div>
+                    <span class="heading-icon">＋</span>
+                </div>
+
+                {% if error %}
+                    <div class="alert">{{ error }}</div>
+                {% endif %}
+
+                <form action="/" method="POST">
+                    <div class="field">
+                        <label for="patient_name">Patient name <span class="required">*</span></label>
+                        <input type="text" id="patient_name" name="patient_name"
+                               placeholder="Enter patient's full name" required>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="field">
+                            <label for="age">Age <span class="required">*</span></label>
+                            <input type="number" id="age" name="age" min="0" max="120"
+                                   placeholder="Age in years" required>
+                        </div>
+
+                        <div class="field">
+                            <label for="sex">Sex</label>
+                            <select id="sex" name="sex">
+                                <option value="">Select</option>
+                                <option value="Female">Female</option>
+                                <option value="Male">Male</option>
+                                <option value="Intersex">Intersex</option>
+                                <option value="Prefer not to say">Prefer not to say</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label for="symptoms">Current symptoms <span class="required">*</span></label>
+                        <textarea id="symptoms" name="symptoms" rows="4" required
+                                  placeholder="For example: fever, cough, sore throat..."></textarea>
+                        <small>Describe all symptoms the patient is experiencing.</small>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="field">
+                            <label for="duration">Duration</label>
+                            <input type="text" id="duration" name="duration"
+                                   placeholder="e.g. 2 days">
+                        </div>
+
+                        <div class="field">
+                            <label for="severity">Severity</label>
+                            <select id="severity" name="severity">
+                                <option value="">Select severity</option>
+                                <option value="Mild">Mild</option>
+                                <option value="Moderate">Moderate</option>
+                                <option value="Severe">Severe</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label for="history">Medical history</label>
+                        <textarea id="history" name="history" rows="2"
+                                  placeholder="Relevant conditions or 'None'"></textarea>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="field">
+                            <label for="medications">Current medications</label>
+                            <textarea id="medications" name="medications" rows="2"
+                                      placeholder="List medicines, or leave blank"></textarea>
+                        </div>
+
+                        <div class="field">
+                            <label for="allergies">Known allergies</label>
+                            <textarea id="allergies" name="allergies" rows="2"
+                                      placeholder="List allergies, or leave blank"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="privacy-note">
+                        <span>ⓘ</span>
+                        <p>Enter only information needed for this educational analysis.
+                           Avoid including unnecessary personal or identifying details.</p>
+                    </div>
+
+                    <button type="submit" class="primary-button">
+                        Analyze Symptoms <span>→</span>
+                    </button>
+                </form>
+            </section>
+
+            <aside class="side-column">
+                <section class="panel how-panel">
+                    <span class="step-label">HOW IT WORKS</span>
+                    <h2>Your report, in 4 steps</h2>
+                    <div class="process-step">
+                        <span class="process-number">01</span>
+                        <div><strong>Patient details</strong><p>Provide symptoms and relevant history.</p></div>
+                    </div>
+                    <div class="process-step">
+                        <span class="process-number">02</span>
+                        <div><strong>AI analysis</strong><p>Organize symptoms and identify missing details.</p></div>
+                    </div>
+                    <div class="process-step">
+                        <span class="process-number">03</span>
+                        <div><strong>Health information</strong><p>Review possible explanations and follow-up questions.</p></div>
+                    </div>
+                    <div class="process-step">
+                        <span class="process-number">04</span>
+                        <div><strong>Save your report</strong><p>Download the generated text report.</p></div>
+                    </div>
+                </section>
+
+                <section class="safety-card">
+                    <span class="safety-icon">♥</span>
+                    <h3>Important safety note</h3>
+                    <p>This tool is for educational information only. It cannot diagnose conditions or replace a qualified healthcare professional.</p>
+                    <p>If symptoms are severe or life-threatening, seek emergency medical care immediately.</p>
+                </section>
+            </aside>
+        </div>
+
+        {% if report %}
+        <section class="panel report-panel" id="report">
+            <div class="report-heading">
+                <div>
+                    <span class="step-label">ANALYSIS COMPLETE</span>
+                    <h2>Patient symptom report</h2>
+                    <p>Patient: {{ patient_name }}</p>
+                </div>
+                <a class="download-button" href="{{ url_for('download') }}">
+                    ↓ Download Report
+                </a>
+            </div>
+            <pre class="report-content">{{ report }}</pre>
+            <p class="report-disclaimer">
+                This AI-generated report is informational only and is not a medical diagnosis.
+            </p>
+        </section>
+        {% endif %}
+
+        <footer>
+            <span>MedAssist · AI Symptom Assistant</span>
+            <span>Educational use only · Not a substitute for professional medical advice</span>
+        </footer>
+    </main>
+</body>
+</html>
